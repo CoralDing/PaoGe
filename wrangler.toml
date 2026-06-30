@@ -8,4 +8,4 @@ directory = "./public"
 [[d1_databases]]
 binding = "DB"
 database_name = "paoge"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "eb59230d-4cab-4e79-b0a9-fce660b84a35"
