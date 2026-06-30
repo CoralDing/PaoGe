@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--
+  文件说明：PaoGe 提交收录页面，提供访客推荐站点的表单入口
+  作者：Codex
+  创建时间：2026-06-30
+-->
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提交收录 - PaoGe</title>
+    <meta name="description" content="向 PaoGe 推荐值得长期收藏的网站和工具。">
+    <link rel="canonical" href="https://pao.ge/contribute.html">
+    <link rel="icon" href="/ico.ico">
+    <style>
+        :root { --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; --max:1080px; }
+        [data-theme="dark"] { --bg:#080b12; --bg2:#101726; --panel:rgba(255,255,255,.08); --panel2:rgba(255,255,255,.13); --line:rgba(255,255,255,.13); --text:#f7fbff; --muted:rgba(247,251,255,.68); --weak:rgba(247,251,255,.44); --brand:#45f0c2; --brand2:#6c7cff; --brand3:#ffb86b; --danger:#ff6f91; --shadow:0 24px 80px rgba(0,0,0,.32); }
+        [data-theme="light"] { --bg:#f5f8fb; --bg2:#fff; --panel:rgba(255,255,255,.76); --panel2:rgba(255,255,255,.94); --line:rgba(16,23,38,.1); --text:#101726; --muted:rgba(16,23,38,.68); --weak:rgba(16,23,38,.46); --brand:#02b88a; --brand2:#5865f2; --brand3:#ef8f2f; --danger:#e54568; --shadow:0 24px 70px rgba(33,46,70,.13); }
+        * { box-sizing:border-box; } body { margin:0; min-height:100vh; font-family:var(--font); color:var(--text); background:radial-gradient(circle at 10% 10%, rgba(69,240,194,.22), transparent 30rem), radial-gradient(circle at 85% 0, rgba(108,124,255,.2), transparent 30rem), linear-gradient(135deg,var(--bg),var(--bg2)); } a { color:inherit; text-decoration:none; } button, input, textarea, select { font:inherit; } button { cursor:pointer; border:0; }
+        .shell { width:min(var(--max), calc(100% - 36px)); margin:0 auto; } .topbar { position:sticky; top:14px; z-index:10; display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:14px; padding:12px; border:1px solid var(--line); border-radius:24px; background:var(--panel2); backdrop-filter:blur(24px); box-shadow:var(--shadow); }
+        .brand { display:flex; align-items:center; gap:12px; } .mark { width:42px; height:42px; display:grid; place-items:center; border-radius:15px; color:#071119; font-weight:900; background:linear-gradient(135deg,var(--brand),var(--brand3)); } .name { font-size:1.15rem; font-weight:900; letter-spacing:-.04em; } .domain { color:var(--weak); font-size:.78rem; } .nav { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; } .nav a, .theme { padding:10px 13px; border-radius:999px; color:var(--muted); background:transparent; } .nav a:hover, .theme:hover { color:var(--text); background:var(--panel); }
+        .hero { padding:86px 0 28px; } .eyebrow { display:inline-flex; padding:8px 12px; border:1px solid var(--line); border-radius:999px; color:var(--muted); background:var(--panel); } h1 { margin:22px 0 16px; max-width:880px; font-size:clamp(3rem,8vw,6.8rem); line-height:.92; letter-spacing:-.08em; } h1 span { color:transparent; background:linear-gradient(135deg,var(--brand),var(--brand2),var(--brand3)); -webkit-background-clip:text; background-clip:text; } .lead { max-width:720px; color:var(--muted); font-size:1.12rem; line-height:1.85; }
+        .layout { display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:16px; align-items:start; margin-bottom:58px; } .panel { padding:24px; border:1px solid var(--line); border-radius:30px; background:var(--panel2); box-shadow:var(--shadow); } .form-grid { display:grid; gap:16px; } label { display:grid; gap:8px; color:var(--muted); font-weight:700; } input, textarea, select { width:100%; border:1px solid var(--line); border-radius:16px; outline:0; color:var(--text); background:rgba(255,255,255,.06); padding:13px 14px; } textarea { min-height:110px; resize:vertical; } input:focus, textarea:focus, select:focus { border-color:color-mix(in srgb,var(--brand),transparent 45%); } .submit { min-height:54px; border-radius:18px; color:#071119; font-weight:900; background:linear-gradient(135deg,var(--brand),var(--brand3)); } .tips h2 { margin:0 0 12px; } .tips ul { margin:0; padding-left:18px; color:var(--muted); line-height:1.9; } .success { display:none; padding:28px; border:1px solid color-mix(in srgb,var(--brand),transparent 45%); border-radius:28px; color:var(--text); background:color-mix(in srgb,var(--brand),transparent 86%); } .success.show { display:block; }
+        .footer { display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; margin:36px 0 24px; padding-top:20px; border-top:1px solid var(--line); color:var(--weak); } @media (max-width:860px) { .topbar { align-items:flex-start; flex-wrap:wrap; } .nav { width:100%; justify-content:flex-start; } .layout { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+<header class="shell topbar"><a class="brand" href="/"><div class="mark">PG</div><div><div class="name">PaoGe</div><div class="domain">pao.ge</div></div></a><nav class="nav"><a href="/">首页</a><a href="/about.html">关于</a><a href="/links.html">合作伙伴</a><button class="theme" id="themeBtn" type="button">切换主题</button></nav></header>
+<main class="shell">
+    <section class="hero"><div class="eyebrow">提交收录</div><h1>推荐一个值得长期收藏的<span>好入口。</span></h1><p class="lead">我们欢迎清爽、稳定、有明确价值的网站。提交后会进入后台审核，通过后展示在 PaoGe 首页。</p></section>
+    <section class="layout">
+        <div class="panel" id="formPanel">
+            <form class="form-grid" id="submitForm">
+                <label>网站名称<input id="siteName" required placeholder="例如：PaoGe"></label>
+                <label>网站地址<input id="siteUrl" required type="url" placeholder="https://example.com"></label>
+                <label>一句话描述<textarea id="siteDesc" required placeholder="说明这个网站解决什么问题，适合谁使用"></textarea></label>
+                <label>推荐分类<select id="siteCat" required><option value="">正在加载分类...</option></select></label>
+                <label>你的联系方式（可选）<input id="siteContact" type="email" placeholder="name@example.com"></label>
+                <button class="submit" type="submit">提交收录申请</button>
+            </form>
+            <div class="success" id="successMsg"><h2>提交成功</h2><p>感谢推荐，我们会尽快审核。若信息完整且符合收录标准，会出现在导航中。</p></div>
+        </div>
+        <aside class="panel tips"><h2>收录标准</h2><ul><li>网站可以稳定访问，内容健康合法。</li><li>有明确用途，不是纯采集或广告堆叠页面。</li><li>体验清爽，最好能长期维护。</li><li>请尽量写清楚推荐理由，方便审核。</li></ul></aside>
+    </section>
+</main>
+<footer class="shell footer"><div>PaoGe © 2026 · pao.ge</div><div><a href="/admin">管理后台</a></div></footer>
+<script>
+const root = document.documentElement;
+root.dataset.theme = localStorage.getItem('paoge-theme') || root.dataset.theme;
+document.getElementById('themeBtn').addEventListener('click', () => { const next = root.dataset.theme === 'dark' ? 'light' : 'dark'; root.dataset.theme = next; localStorage.setItem('paoge-theme', next); });
+
+// 分类从后台读取，确保表单提交的分类和首页实际展示分类保持一致。
+(async () => {
+    const select = document.getElementById('siteCat');
+    try {
+        const res = await fetch('/api/categories');
+        const cats = res.ok ? await res.json() : [];
+        const activeCats = cats.filter(cat => cat.is_active !== 0);
+        select.innerHTML = '<option value="">请选择分类</option>' + activeCats.map(cat => `<option value="${cat.id}">${cat.icon || '📁'} ${cat.name}</option>`).join('');
+    } catch (_) { select.innerHTML = '<option value="featured">✨ 精选入口</option>'; }
+})();
+
+// 提交内容进入 CMS 审核队列，不直接展示，避免垃圾内容污染前台。
+document.getElementById('submitForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = event.currentTarget.querySelector('.submit');
+    button.textContent = '提交中...';
+    button.disabled = true;
+    try {
+        const res = await fetch('/api/submissions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: document.getElementById('siteName').value.trim(),
+                url: document.getElementById('siteUrl').value.trim(),
+                description: document.getElementById('siteDesc').value.trim(),
+                category: document.getElementById('siteCat').value,
+                submitter_email: document.getElementById('siteContact').value.trim()
+            })
+        });
+        if (!res.ok) throw new Error('submit failed');
+        document.getElementById('submitForm').style.display = 'none';
+        document.getElementById('successMsg').classList.add('show');
+    } catch (_) {
+        alert('提交失败，请稍后再试');
+        button.textContent = '提交收录申请';
+        button.disabled = false;
+    }
+});
+</script>
+</body>
+</html>

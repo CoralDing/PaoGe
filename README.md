@@ -1,311 +1,231 @@
-<div align="center">
+# PaoGe
 
-<img src="https://raw.githubusercontent.com/PaoGe/paoge/main/ico.ico" width="100" style="border-radius:50%" alt="PaoGe Logo">
+PaoGe 是一个部署在 Cloudflare 上的网址导航站，包含前台导航页面和后台内容管理系统。它适合用来整理常用网站、维护分类、接收用户投稿，并通过后台统一管理站点内容。
 
-# ⚡ PaoGe
+> 当前工程以 Cloudflare Workers（Cloudflare 的边缘函数运行环境）+ D1（Cloudflare 提供的 SQLite 数据库）为核心，不再包含旧文档中提到的本地 Express（Node.js 后端框架）服务结构。
 
-### ✨ 去更远的地方，从 PaoGe 开始 ✨
+## 项目亮点
 
-**一个精心策划的网址导航站，自带完整 CMS 后台 — 支持本地部署或一键部署到 Cloudflare。**
+- **前后台一体**：前台负责展示导航、关于、友链和投稿页面；后台负责管理数据。
+- **Cloudflare 原生部署**：静态资源、接口服务和数据库都放在 Cloudflare 体系内，部署链路简单。
+- **完整 CMS 能力**：支持站点、分类、标签、页面、友链、用户、日志、统计和备份管理。
+- **投稿与反馈闭环**：用户可以提交新站点，也可以上报问题，管理员在后台审核处理。
+- **一键部署脚本**：`npm run deploy` 会自动检查登录、创建数据库、初始化数据并发布 Worker。
+- **首次密码更安全**：初始化数据库时会生成随机后台密码，避免线上保留固定默认密码。
 
-[![在线演示](https://img.shields.io/badge/在线演示-pao.ge-FF6B6B?style=flat-square)](https://pao.ge)
-[![Cloudflare](https://img.shields.io/badge/Cloudflare-paoge.workers.dev-F38020?style=flat-square&logo=cloudflare&logoColor=white)](https://paoge.workers.dev)
-[![版本](https://img.shields.io/badge/版本-2.1-4ECDC4?style=flat-square)]()
-[![收录站点](https://img.shields.io/badge/收录站点-150+-45B7D1?style=flat-square)]()
-[![分类](https://img.shields.io/badge/分类-10-96CEB4?style=flat-square)]()
-[![开源协议](https://img.shields.io/badge/开源协议-MIT-FFEAA7?style=flat-square)]()
+## 技术组成
 
-<br>
+| 模块 | 使用技术 | 说明 |
+| --- | --- | --- |
+| 前台页面 | HTML（网页结构）、CSS（样式）、JavaScript（浏览器脚本） | 位于 `public/`，直接作为静态资源发布 |
+| 后台页面 | HTML、CSS、JavaScript | 位于 `public/admin/`，通过接口读写数据 |
+| 接口服务 | Hono（轻量 Web 框架） | 位于 `worker/index.js`，运行在 Cloudflare Workers 上 |
+| 数据库 | D1（Cloudflare 托管 SQLite 数据库） | 表结构在 `database/schema.sql`，初始数据在 `database/seed.sql` |
+| 部署工具 | Wrangler（Cloudflare 官方命令行工具） | 用于本地预览、数据库操作和线上部署 |
 
-<a href="https://deploy.workers.cloudflare.com/?url=https://github.com/PaoGe/paoge" target="_blank">
-<img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare">
-</a>
+## 目录结构
 
-</div>
-
----
-
-## 📋 目录
-
-```
-paoge/
-├── 📖 简介
-├── 🌟 功能特性
-├── 🏗️ 架构设计
-├── 🚀 快速开始
-│   ├── 本地开发
-│   └── Cloudflare 一键部署
-├── 🔧 后台管理
-├── 📁 项目结构
-├── 🛠️ 技术栈
-├── 📸 截图预览
-└── 📄 开源协议
-```
-
----
-
-## 📖 简介
-
-PaoGe 是一个精心策划的网址导航站，帮助你发现互联网上最优质的网站。采用**玻璃拟态 UI** 设计，支持深色/浅色主题切换，收录了 **150+ 精选站点**，涵盖 10 个分类，并配备**完整的 CMS 后台**，方便管理内容。
-
-最初作为纯静态前端构建，PaoGe 已发展为一个全栈应用，提供两种部署方式：本地 Node.js CMS 和无服务器 Cloudflare Workers 版本。
-
----
-
-## 🌟 功能特性
-
-| 功能 | 说明 |
-|:-----|:-----|
-| 🎨 **玻璃拟态 UI** | 现代毛玻璃设计，流畅动画与鼠标光晕特效 |
-| 🌓 **深色 / 浅色模式** | 一键切换主题，自动记住用户偏好 |
-| 🔍 **多引擎搜索** | 谷歌、必应、百度、DuckDuckGo — 导航栏内直接搜索 |
-| 📂 **10 大分类** | 推荐、视频、动漫、软件、工具、资讯、社区、AI、开发、设计 |
-| 📱 **全端响应式** | 针对桌面、平板和移动端全面适配 |
-| 🇨🇳 **国内可达** | 所有收录站点从大陆均可访问，CDN 使用国内友好服务商 |
-| 🗄️ **完整 CMS 后台** | 通过管理面板管理站点、分类、页面、友链、用户和设置 |
-| 🩺 **站点健康监控** | 批量检测所有站点可用性 — 按在线 / 缓慢 / 离线筛选 |
-| 🔄 **自动获取元信息** | 输入网址一键获取图标、站名和描述 |
-| 🖼️ **自定义 Favicon** | 在系统设置中上传自己的站点图标 |
-| 📊 **点击统计** | 内置点击计数，追踪站点热度 |
-| 📝 **用户提交** | 访客可提交网站，由管理员审核收录 |
-| ☁️ **Cloudflare 部署** | 一键部署到 Cloudflare Workers + D1 无服务器架构 |
-| 🔐 **后台鉴权** | Bearer Token 认证，操作日志全程记录 |
-| 📦 **开箱即用** | 预置 150+ 站点、10 个分类和默认设置 |
-
----
-
-## 🏗️ 架构设计
-
-PaoGe 提供**两种部署模式**，前端和 API 完全一致：
-
-```
-┌─────────────────────────────────────────────────────┐
-│                  前端 (HTML/CSS/JS)                   │
-│   index.html · about.html · links.html · contribute  │
-│                + 13 个后台管理页面                     │
-└────────────────────┬────────────────────────────────┘
-                     │ fetch('/api/...')
-        ┌────────────┴────────────┐
-        ▼                         ▼
-┌───────────────┐       ┌──────────────────┐
-│   本地模式     │       │  Cloudflare 模式  │
-│               │       │                   │
-│  Express.js   │       │  Hono 框架        │
-│  + sql.js     │       │  + D1 (SQLite)    │
-│  + multer     │       │  + Workers Assets │
-│  端口 3000    │       │  边缘运行时       │
-└───────────────┘       └──────────────────┘
+```text
+PaoGe/
+├── public/                    # 前台和后台静态页面
+│   ├── index.html             # 导航首页
+│   ├── about.html             # 关于页面
+│   ├── links.html             # 友链页面
+│   ├── contribute.html        # 投稿页面
+│   ├── robots.txt             # 搜索引擎抓取规则
+│   ├── sitemap.xml            # 站点地图
+│   └── admin/                 # 后台管理页面
+│       ├── index.html         # 后台登录页
+│       ├── dashboard.html     # 站点管理
+│       ├── categories.html    # 分类管理
+│       ├── health.html        # 站点检测
+│       ├── links.html         # 友链管理
+│       ├── pages.html         # 页面管理
+│       ├── reports.html       # 问题反馈
+│       ├── settings.html      # 系统设置
+│       ├── stats.html         # 数据统计
+│       ├── submissions.html   # 投稿审核
+│       ├── users.html         # 用户管理
+│       ├── logs.html          # 操作日志
+│       └── backup.html        # 数据备份与恢复
+├── worker/
+│   └── index.js               # Cloudflare Worker 接口入口
+├── database/
+│   ├── schema.sql             # 数据库表结构
+│   └── seed.sql               # 初始分类、站点、页面和管理员数据
+├── scripts/
+│   └── deploy-cloudflare.js   # 一键部署脚本
+├── wrangler.toml              # Cloudflare 项目配置
+├── package.json               # 项目脚本和依赖声明
+└── README.md                  # 项目说明文档
 ```
 
-| | 本地模式 | Cloudflare 模式 |
-|:--|:---------|:---------------|
-| **运行时** | Node.js (Express) | Cloudflare Workers (Hono) |
-| **数据库** | sql.js（文件型 SQLite） | D1（无服务器 SQLite） |
-| **部署方式** | \`node server.js\` | \`wrangler deploy\` |
-| **费用** | 免费（自备服务器） | 免费额度充裕 |
+## 快速开始
 
----
+### 1. 准备环境
 
-## 🚀 快速开始
+你需要先准备：
 
-### 本地开发
+- Node.js 18+（JavaScript 运行环境，用来执行部署脚本和安装依赖）
+- npm（Node.js 自带的包管理工具，用来安装依赖）
+- Cloudflare 账号（用于创建 Worker 和 D1 数据库）
+
+### 2. 安装依赖
 
 ```bash
-# 克隆仓库
-git clone https://github.com/PaoGe/paoge.git
-cd paoge
-
-# 安装依赖
 npm install
-
-# 初始化数据库（首次运行）
-node seed.js
-
-# 启动服务
-npm start
-# → http://localhost:3000
 ```
 
-**默认管理员：** `admin` / `admin123`
+这一步会安装 Hono（接口框架）和 Wrangler（Cloudflare 命令行工具）。
 
-### Cloudflare 一键部署
-
-点击上方的 **「Deploy to Cloudflare」** 按钮，即可自动完成部署：
-
-- 自动克隆仓库
-- 自动创建 D1 数据库
-- 自动执行数据库初始化（建表 + 导入示例数据）
-- 自动部署 Worker 及所有静态资源
-
-部署完成后你将在 Cloudflare Dashboard 中看到你的站点地址。
-
-> **提示**：部署过程中会要求你登录 Cloudflare 账号。如果你还没有账号，会引导你免费注册（Worker 免费额度足够个人使用）。
-
-### 命令行部署（备选方案）
-
-如果你更习惯用命令行，也可以在本地执行：
+### 3. 本地预览
 
 ```bash
-# 克隆仓库
-git clone https://github.com/PaoGe/paoge.git
-cd paoge/cloudflare
+npm run dev
+```
 
-# 安装依赖
-npm install
+该命令会启动 Wrangler Dev（Cloudflare 本地开发服务），用于在本地模拟 Worker 和静态资源访问。
 
-# 一键部署（自动处理认证、创建 D1、初始化数据、部署上线）
+### 4. 部署到 Cloudflare
+
+```bash
 npm run deploy
 ```
 
-部署脚本会自动完成：检查 Wrangler → 登录 Cloudflare → 创建 D1 → 初始化数据库 → 部署上线。
+部署脚本会自动完成下面几件事：
 
-**你的站点将上线于：** `https://paoge.<你的子域名>.workers.dev`
+1. 检查 Wrangler 是否可用；
+2. 引导登录 Cloudflare；
+3. 创建或复用名为 `paoge` 的 D1 数据库；
+4. 将数据库 ID 写入 `wrangler.toml`；
+5. 执行 `database/schema.sql` 创建表；
+6. 如果数据库为空，执行 `database/seed.sql` 导入初始数据；
+7. 部署 Worker 和 `public/` 目录下的静态资源。
 
-### 手动部署到 Cloudflare
+部署成功后，终端会输出：
+
+- 网站地址：`https://paoge.workers.dev`
+- 后台地址：`https://paoge.workers.dev/admin`
+- 首次账号：`admin`
+- 首次密码：由部署脚本随机生成，请保存终端输出
+
+> 首次登录后台后，建议立刻修改管理员密码。
+
+## 后台功能
+
+| 页面 | 能做什么 |
+| --- | --- |
+| 站点管理 | 新增、编辑、删除、批量更新导航站点 |
+| 分类管理 | 管理导航分类、图标和排序 |
+| 标签管理 | 为站点维护标签关系 |
+| 投稿审核 | 查看用户投稿，审核后转为正式站点 |
+| 问题反馈 | 处理用户上报的错误链接或站点问题 |
+| 页面管理 | 编辑关于、友链、投稿等内容页 |
+| 友链管理 | 维护友情链接列表 |
+| 站点检测 | 批量检查站点可访问状态 |
+| 数据统计 | 查看站点数量、分类分布和热门点击 |
+| 用户管理 | 管理后台用户和启用状态 |
+| 操作日志 | 查看管理员关键操作记录 |
+| 备份恢复 | 导出或导入站点核心数据 |
+| 系统设置 | 修改站点名称、描述、图标等配置 |
+
+## 数据库说明
+
+项目会创建以下核心数据表：
+
+| 表名 | 作用 |
+| --- | --- |
+| `sites` | 导航站点数据 |
+| `categories` | 站点分类 |
+| `tags` | 标签信息 |
+| `site_tags` | 站点和标签的关联关系 |
+| `users` | 后台用户 |
+| `sessions` | 登录会话 |
+| `settings` | 系统配置 |
+| `pages` | 内容页面 |
+| `links` | 友情链接 |
+| `submissions` | 用户投稿 |
+| `reports` | 用户问题反馈 |
+| `logs` | 后台操作日志 |
+| `stats` | 访问和点击统计 |
+
+## 常用命令
 
 ```bash
-cd cloudflare
+# 安装依赖
+npm install
 
-# 登录 Cloudflare
-npx wrangler login
+# 本地开发预览
+npm run dev
 
-# 创建 D1 数据库
-npx wrangler d1 create paoge
-# → 将 database_id 复制到 wrangler.toml
+# 一键部署到 Cloudflare
+npm run deploy
 
-# 初始化数据库
-npx wrangler d1 execute paoge --remote --file=./schema.sql
-npx wrangler d1 execute paoge --remote --file=./seed.sql
-
-# 部署
-npx wrangler deploy
+# 只执行 Wrangler 部署
+npm run deploy:manual
 ```
 
----
+## 配置说明
 
-## 🔧 后台管理
+主要配置文件是 `wrangler.toml`：
 
-访问 `/admin` 进入后台 — 一个完整的 CMS，管理导航站的方方面面。
+```toml
+name = "paoge"
+main = "worker/index.js"
+compatibility_date = "2025-06-25"
 
-| 模块 | 说明 |
-|:-----|:-----|
-| 📋 **站点管理** | 增删改查导航站点，支持一键获取图标和描述 |
-| 📂 **分类管理** | 管理站点分类，自定义图标和排序 |
-| 📄 **页面管理** | 可视化编辑关于、友链、投稿等页面内容 |
-| 🔗 **友链管理** | 管理友情链接，支持自动获取站点元信息 |
-| 📮 **提交审核** | 审核访客提交的站点，一键通过或拒绝 |
-| 🩺 **站点检测** | 批量可用性监控 — 按在线 / 缓慢 / 离线筛选 |
-| 📊 **统计看板** | 点击量分析，逐站追踪 |
-| 📝 **操作日志** | 管理员操作审计记录 |
-| 👥 **用户管理** | 管理管理员账号和权限 |
-| 💾 **备份恢复** | 导出和导入数据库备份 |
-| ⚙️ **系统设置** | 站点名称、描述、自定义图标、天气组件 |
+[assets]
+directory = "./public"
 
----
-
-## 📁 项目结构
-
-```
-paoge/
-├── index.html              # 主页导航
-├── about.html              # 关于页面（CMS 驱动）
-├── links.html              # 友链页面（CMS 驱动）
-├── contribute.html          # 投稿页面（CMS 驱动）
-├── server.js               # 本地 CMS 服务（Express + sql.js，约 1150 行）
-├── seed.js                 # 数据库初始化脚本
-├── package.json            # Node.js 依赖
-│
-├── css/
-│   ├── style.css           # 主样式表（玻璃拟态、主题）
-│   └── font-awesome.css    # 图标库
-├── js/
-│   └── app.js              # 前端逻辑（渲染、搜索、主题）
-├── ico/                    # 站点图标
-│
-├── admin/                  # 后台管理（13 个页面）
-│   ├── index.html          # 登录页
-│   ├── dashboard.html      # 站点管理
-│   ├── categories.html     # 分类管理
-│   ├── health.html         # 站点检测
-│   ├── ...                 # （见后台管理章节）
-│   └── backup.html         # 备份恢复
-│
-├── cloudflare/             # Cloudflare Workers 部署
-│   ├── src/
-│   │   └── index.js        # Hono API 后端（约 540 行）
-│   ├── public/             # 静态资源（前端副本）
-│   ├── schema.sql          # D1 数据库结构（10 张表）
-│   ├── seed.sql            # 种子数据
-│   ├── deploy.js           # 一键部署脚本
-│   ├── wrangler.toml       # Cloudflare 配置
-│   └── package.json        # CF 依赖（hono, wrangler）
-│
-├── robots.txt              # 搜索引擎规则
-├── sitemap.xml             # XML 站点地图
-└── README.md               # 本文件
+[[d1_databases]]
+binding = "DB"
+database_name = "paoge"
+database_id = "你的 D1 数据库 ID"
 ```
 
----
+字段含义：
 
-## 🛠️ 技术栈
+- `name`：Worker 项目名称，影响默认访问域名。
+- `main`：Worker 入口文件。
+- `compatibility_date`：Cloudflare Workers 的兼容日期，用来固定运行时行为。
+- `assets.directory`：静态资源目录。
+- `binding`：代码中访问数据库时使用的变量名，本项目固定为 `DB`。
+- `database_name`：D1 数据库名称。
+- `database_id`：D1 数据库唯一 ID，一键部署脚本会自动写入。
 
-**前端**
+## 接口概览
 
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
-![Font Awesome](https://img.shields.io/badge/Font_Awesome-528DD7?style=flat-square&logo=font-awesome&logoColor=white)
+接口统一由 `worker/index.js` 提供，前台和后台都通过 `/api/...` 访问。
 
-**本地后端**
+| 接口分类 | 代表接口 |
+| --- | --- |
+| 登录认证 | `POST /api/auth/login`、`PUT /api/auth/password` |
+| 站点管理 | `GET /api/sites`、`POST /api/sites`、`PUT /api/sites/:id`、`DELETE /api/sites/:id` |
+| 分类管理 | `GET /api/categories`、`POST /api/categories`、`PUT /api/categories/:id` |
+| 投稿反馈 | `POST /api/submissions`、`GET /api/submissions`、`POST /api/reports` |
+| 页面友链 | `GET /api/pages`、`PUT /api/pages/:id`、`GET /api/links` |
+| 统计日志 | `GET /api/stats/overview`、`GET /api/logs` |
+| 备份恢复 | `GET /api/export`、`POST /api/import` |
+| 工具能力 | `GET /api/fetch-icon`、`POST /api/health-check`、`POST /api/upload` |
 
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)
-![Express](https://img.shields.io/badge/Express-000000?style=flat-square&logo=express&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
+需要后台权限的接口会校验登录 Token（登录令牌）。普通用户可访问前台展示、投稿、反馈等公开接口。
 
-**Cloudflare 后端**
+## 部署注意事项
 
-![Cloudflare Workers](https://img.shields.io/badge/Cloudflare_Workers-F38020?style=flat-square&logo=cloudflare&logoColor=white)
-![Hono](https://img.shields.io/badge/Hono-E36002?style=flat-square)
-![D1](https://img.shields.io/badge/D1_SQLite-004B85?style=flat-square)
+- `npm run deploy` 会修改 `wrangler.toml` 中的 `database_id`，这是正常行为。
+- 初始化数据只会在 `sites` 表为空时导入，避免覆盖已有线上数据。
+- 部署脚本生成的临时 SQL 文件会自动删除，防止首次密码残留在项目目录。
+- 如果你更换了 Worker 名称，默认访问地址也会随之变化。
+- 如果绑定自定义域名，需要到 Cloudflare 控制台中额外配置路由或域名。
 
----
+## 适合的使用场景
 
-## 📸 截图预览
+- 个人网址收藏导航；
+- 团队内部工具入口；
+- AI、设计、开发等垂直资源目录；
+- 可投稿、可审核的资源推荐站；
+- 轻量 CMS（内容管理系统）练习项目。
 
-<div align="center">
+## License
 
-**深色主题**
-
-![深色模式](https://raw.githubusercontent.com/PaoGe/paoge/main/screenshot.png)
-
-**浅色主题**
-
-![浅色模式](https://raw.githubusercontent.com/PaoGe/paoge/main/screenshot-light.png)
-
-</div>
-
----
-
-## 🌍 在线地址
-
-| 平台 | 地址 | 说明 |
-|:-----|:-----|:-----|
-| Cloudflare Workers | [paoge.workers.dev](https://paoge.workers.dev) | 全栈 CMS 版本 |
-| 自定义域名 | [pao.ge](https://pao.ge) | 前端演示 |
-| 本地部署 | `localhost:3000` | 自备 Node.js 环境 |
-
----
-
-## 📄 开源协议
-
-本项目基于 [MIT License](LICENSE) 开源。
-
----
-
-<div align="center">
-
-**⭐ 如果觉得这个项目对你有帮助，欢迎点个 Star！⭐**
-
-[在线演示](https://pao.ge) · [Cloudflare 版](https://paoge.workers.dev) · [反馈问题](https://github.com/PaoGe/paoge/issues) · [提出建议](https://github.com/PaoGe/paoge/issues)
-
-</div>
+本项目基于 MIT License（宽松开源协议）发布。

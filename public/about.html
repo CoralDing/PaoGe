@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+  文件说明：PaoGe 关于页面，介绍站点定位、收录原则和联系方式
+  作者：Codex
+  创建时间：2026-06-30
+-->
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 PaoGe - pao.ge</title>
+    <meta name="description" content="了解 PaoGe 的站点定位、收录原则和合作方式。">
+    <link rel="canonical" href="https://pao.ge/about.html">
+    <link rel="icon" href="/ico.ico">
+    <style>
+        :root { --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; --ease: cubic-bezier(.2,.8,.2,1); --max: 1080px; }
+        [data-theme="dark"] { --bg:#080b12; --bg2:#101726; --panel:rgba(255,255,255,.08); --panel2:rgba(255,255,255,.13); --line:rgba(255,255,255,.13); --text:#f7fbff; --muted:rgba(247,251,255,.68); --weak:rgba(247,251,255,.44); --brand:#45f0c2; --brand2:#6c7cff; --brand3:#ffb86b; --shadow:0 24px 80px rgba(0,0,0,.32); }
+        [data-theme="light"] { --bg:#f5f8fb; --bg2:#fff; --panel:rgba(255,255,255,.76); --panel2:rgba(255,255,255,.94); --line:rgba(16,23,38,.1); --text:#101726; --muted:rgba(16,23,38,.68); --weak:rgba(16,23,38,.46); --brand:#02b88a; --brand2:#5865f2; --brand3:#ef8f2f; --shadow:0 24px 70px rgba(33,46,70,.13); }
+        * { box-sizing:border-box; } body { margin:0; min-height:100vh; font-family:var(--font); color:var(--text); background:radial-gradient(circle at 10% 10%, rgba(69,240,194,.22), transparent 30rem), radial-gradient(circle at 85% 0, rgba(108,124,255,.2), transparent 30rem), linear-gradient(135deg, var(--bg), var(--bg2)); } a { color:inherit; text-decoration:none; } button { font:inherit; cursor:pointer; border:0; }
+        .shell { width:min(var(--max), calc(100% - 36px)); margin:0 auto; }
+        .topbar { position:sticky; top:14px; z-index:10; display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:14px; padding:12px; border:1px solid var(--line); border-radius:24px; background:var(--panel2); backdrop-filter:blur(24px); box-shadow:var(--shadow); }
+        .brand { display:flex; align-items:center; gap:12px; } .mark { width:42px; height:42px; display:grid; place-items:center; border-radius:15px; color:#071119; font-weight:900; background:linear-gradient(135deg,var(--brand),var(--brand3)); } .name { font-size:1.15rem; font-weight:900; letter-spacing:-.04em; } .domain { color:var(--weak); font-size:.78rem; }
+        .nav { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; } .nav a, .theme { padding:10px 13px; border-radius:999px; color:var(--muted); background:transparent; } .nav a:hover, .theme:hover { color:var(--text); background:var(--panel); }
+        .hero { padding:90px 0 34px; } .eyebrow { display:inline-flex; padding:8px 12px; border:1px solid var(--line); border-radius:999px; color:var(--muted); background:var(--panel); } h1 { margin:22px 0 16px; max-width:880px; font-size:clamp(3rem,8vw,6.8rem); line-height:.92; letter-spacing:-.08em; } h1 span { color:transparent; background:linear-gradient(135deg,var(--brand),var(--brand2),var(--brand3)); -webkit-background-clip:text; background-clip:text; } .lead { max-width:760px; color:var(--muted); font-size:1.12rem; line-height:1.85; }
+        .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:28px 0; } .card { padding:24px; border:1px solid var(--line); border-radius:28px; background:var(--panel); box-shadow:var(--shadow); } .card b { display:block; margin-bottom:10px; font-size:1.08rem; } .card p, .content p { margin:0; color:var(--muted); line-height:1.75; }
+        .content { margin:18px 0 58px; padding:28px; border:1px solid var(--line); border-radius:32px; background:var(--panel2); } .content h2 { margin:0 0 14px; font-size:1.7rem; letter-spacing:-.04em; } .content ul { margin:14px 0 0; padding-left:20px; color:var(--muted); line-height:1.9; }
+        .footer { display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; margin:36px 0 24px; padding-top:20px; border-top:1px solid var(--line); color:var(--weak); }
+        @media (max-width:760px) { .topbar { align-items:flex-start; flex-wrap:wrap; } .nav { width:100%; justify-content:flex-start; } .grid { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+<header class="shell topbar">
+    <a class="brand" href="/"><div class="mark">PG</div><div><div class="name">PaoGe</div><div class="domain">pao.ge</div></div></a>
+    <nav class="nav"><a href="/">首页</a><a href="/links.html">合作伙伴</a><a href="/contribute.html">提交收录</a><button class="theme" id="themeBtn" type="button">切换主题</button></nav>
+</header>
+<main class="shell">
+    <section class="hero">
+        <div class="eyebrow">关于 PaoGe</div>
+        <h1>一个更克制的<span>上网入口。</span></h1>
+        <p class="lead">PaoGe 不追求把互联网上所有链接都塞进一个页面，而是筛选真正稳定、清爽、有长期价值的入口。你可以把它当作工作台，也可以把它当作每天出发前的第一站。</p>
+    </section>
+    <section class="grid">
+        <div class="card"><b>少而可靠</b><p>默认内容保持克制，优先收录长期可用、体验清爽的网站。</p></div>
+        <div class="card"><b>面向效率</b><p>分类围绕 AI、开发、设计、协作、学习和生活场景组织。</p></div>
+        <div class="card"><b>可持续维护</b><p>后台提供分类、站点、页面、友链和提交审核能力，方便长期运营。</p></div>
+    </section>
+    <section class="content" id="cmsContent">
+        <h2>收录原则</h2>
+        <p>PaoGe 会优先考虑体验稳定、内容健康、价值明确的网站。对于广告过重、采集拼凑、长期不可访问或风险较高的站点，会主动剔除或不予收录。</p>
+        <ul>
+            <li>优先收录长期主义工具和高质量内容入口。</li>
+            <li>尽量降低用户选择成本，而不是制造更多噪音。</li>
+            <li>所有默认内容都可以在后台 CMS 中继续编辑。</li>
+        </ul>
+    </section>
+</main>
+<footer class="shell footer"><div>PaoGe © 2026 · pao.ge</div><div><a href="/admin">管理后台</a></div></footer>
+<script>
+// 主题偏好保存在浏览器本地，保证用户下次打开时仍使用上次选择。
+const root = document.documentElement;
+root.dataset.theme = localStorage.getItem('paoge-theme') || root.dataset.theme;
+document.getElementById('themeBtn').addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    localStorage.setItem('paoge-theme', next);
+});
+
+// CMS 页面内容存在时优先展示后台配置，便于上线后无需改代码即可更新关于页。
+(async () => {
+    try {
+        const res = await fetch('/api/pages/about');
+        if (!res.ok) return;
+        const page = await res.json();
+        if (page?.content) document.getElementById('cmsContent').innerHTML = `<h2>${page.title || '关于 PaoGe'}</h2>${page.content}`;
+    } catch (_) {}
+})();
+</script>
+</body>
+</html>
