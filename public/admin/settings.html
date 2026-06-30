@@ -183,6 +183,11 @@
                     <div class="hint">从 qweather.com 获取的 API Key</div>
                 </div>
                 <div class="form-group">
+                    <label>城市 Location</label>
+                    <input type="text" id="weather_location" placeholder="101010100">
+                    <div class="hint">作为 IP 定位失败时的兜底城市；和风天气城市 ID 或经纬度，例如北京是 101010100</div>
+                </div>
+                <div class="form-group">
                     <label>启用天气显示</label>
                     <select id="weather_enabled">
                         <option value="true">启用</option>
@@ -254,7 +259,7 @@
 
         async function saveSettings() {
             const settings = {};
-            const fields = ['site_name', 'site_description', 'site_icon', 'weather_api_key', 'weather_enabled'];
+            const fields = ['site_name', 'site_description', 'site_icon', 'weather_api_key', 'weather_location', 'weather_enabled'];
             fields.forEach(key => {
                 const el = document.getElementById(key);
                 if (el) settings[key] = el.value;

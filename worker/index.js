@@ -315,6 +315,48 @@ app.put('/api/settings', requireAuth, async (c) => {
     return c.json({ message: 'Settings updated' });
 });
 
+app.get('/api/weather', async (c) => {
+    // 天气配置放在 settings 表里，前台只请求本站接口，避免把 API Key 暴露在浏览器源码中。
+    const settingsRows = (await c.env.DB.prepare('SELECT key, value FROM settings').all()).results;
+    const settings = {};
+    for (const row of settingsRows) settings[row.key] = row.value;
+
+    // 后台关闭天气时直接返回 enabled=false，前台据此隐藏天气模块，避免显示空壳。
+    if (settings.weather_enabled !== 'true') {
+        return c.json({ enabled: false });
+    }
+    if (!settings.weather_api_key) {
+        return c.json({ enabled: true, error: 'Missing weather API key' }, 400);
+    }
+
+    // 优先使用 Cloudflare 根据访问 IP 推断出的经纬度；这样用户打开页面就能看到本地天气，不需要浏览器定位授权。
+    const cf = c.req.raw.cf || {};
+    const ipLocation = cf.longitude && cf.latitude ? `${cf.longitude},${cf.latitude}` : '';
+    // 如果 Cloudflare 本地开发环境没有 IP 位置信息，再使用后台配置的默认城市；最后兜底到北京。
+    const location = c.req.query('location') || ipLocation || settings.weather_location || '101010100';
+    const url = `https://devapi.qweather.com/v7/weather/now?location=${encodeURIComponent(location)}&key=${encodeURIComponent(settings.weather_api_key)}`;
+
+    try {
+        // Worker 作为代理请求第三方天气接口，既解决跨域，也方便统一处理错误格式。
+        const response = await fetch(url, { headers: { 'User-Agent': 'PaoGe-Weather/1.0' } });
+        const data = await response.json();
+        if (!response.ok || data.code !== '200') {
+            return c.json({ enabled: true, error: data.code || 'Weather request failed' }, 502);
+        }
+        return c.json({
+            enabled: true,
+            location,
+            city: cf.city || '',
+            region: cf.region || '',
+            country: cf.country || '',
+            now: data.now,
+            updateTime: data.updateTime
+        });
+    } catch (err) {
+        return c.json({ enabled: true, error: 'Weather service unavailable' }, 502);
+    }
+});
+
 // ═══════════════════════════════════════════
 // PAGES API
 // ═══════════════════════════════════════════

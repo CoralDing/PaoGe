@@ -4,13 +4,21 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "node scripts/deploy-cloudflare.js",
-    "deploy:manual": "wrangler deploy"
+    "dev:alt": "wrangler dev --port 8799",
+    "db:local:schema": "wrangler d1 execute paoge --local --file=./database/schema.sql",
+    "deploy": "npm run build && node scripts/deploy-cloudflare.js",
+    "deploy:manual": "npm run build && wrangler deploy",
+    "dev:app": "vite --host 127.0.0.1",
+    "build": "rm -rf public/assets && vite build",
+    "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {
-    "hono": "^4.4.0"
+    "@picocss/pico": "^1.5.11",
+    "hono": "^4.4.0",
+    "lit": "^3.3.3"
   },
   "devDependencies": {
+    "vite": "^5.4.21",
     "wrangler": "^4.104.0"
   }
 }

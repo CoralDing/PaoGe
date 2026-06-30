@@ -21,6 +21,7 @@ INSERT INTO settings (key, value) VALUES
 ('site_description', '去更远的地方，从 PaoGe 开始'),
 ('weather_api_key', ''),
 ('weather_enabled', 'false'),
+('weather_location', '101010100'),
 ('footer_text', 'PaoGe © 2026 · pao.ge'),
 ('footer_blog_url', 'https://pao.ge'),
 ('footer_github_url', 'https://github.com/paoge'),

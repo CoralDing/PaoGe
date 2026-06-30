@@ -80,11 +80,77 @@ npm install
 
 ### 3. 本地预览
 
+首页现在使用 Vite（前端构建工具）+ Lit（轻量 Web Components 框架）开发，后台管理页面仍保留在 `public/admin/`。
+
+只调试首页 UI 时，运行：
+
+```bash
+npm run dev:app
+```
+
+访问地址：
+
+```text
+http://127.0.0.1:5173
+```
+
+如果你需要同时调试 API（接口）和本地 D1（Cloudflare 本地数据库），先启动 Wrangler：
+
 ```bash
 npm run dev
 ```
 
 该命令会启动 Wrangler Dev（Cloudflare 本地开发服务），用于在本地模拟 Worker 和静态资源访问。
+
+默认访问地址是：
+
+```text
+http://127.0.0.1:8787
+```
+
+如果提示 `Address already in use (127.0.0.1:8787)`，说明 `8787` 端口已经被其他本地服务占用。可以改用备用端口：
+
+```bash
+npm run dev:alt
+```
+
+备用访问地址是：
+
+```text
+http://127.0.0.1:8799
+```
+
+也可以查看是谁占用了端口：
+
+```bash
+lsof -nP -iTCP:8787 -sTCP:LISTEN
+```
+
+本地 D1 数据库和线上 D1 数据库是分开的。第一次本地开发时，需要先创建本地表结构：
+
+```bash
+npm run db:local:schema
+```
+
+如果需要本地后台账号，可以执行下面的 SQL（数据库语句）设置临时密码：
+
+```bash
+npx wrangler d1 execute paoge --local --command="INSERT INTO users (username, password, role, is_active) VALUES ('admin', 'PaoGe@2026', 'admin', 1) ON CONFLICT(username) DO UPDATE SET password='PaoGe@2026', role='admin', is_active=1;"
+```
+
+本地后台地址：
+
+```text
+http://127.0.0.1:8799/admin/
+```
+
+本地后台账号：`admin` / `PaoGe@2026`
+
+修改首页源码后，需要执行构建，把 Vite 产物写入 `public/`，这样 Cloudflare Worker 才能发布最新页面：
+
+```bash
+npm run build
+```
 
 ### 4. 推荐方式：本地一键部署到 Cloudflare
 
@@ -204,6 +270,18 @@ npm install
 
 # 本地开发预览
 npm run dev
+
+# 只开发首页 UI
+npm run dev:app
+
+# 构建首页到 public 目录
+npm run build
+
+# 8787 端口被占用时，使用备用端口 8799
+npm run dev:alt
+
+# 初始化本地 D1 表结构
+npm run db:local:schema
 
 # 一键部署到 Cloudflare
 npm run deploy
