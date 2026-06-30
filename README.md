@@ -86,7 +86,7 @@ npm run dev
 
 该命令会启动 Wrangler Dev（Cloudflare 本地开发服务），用于在本地模拟 Worker 和静态资源访问。
 
-### 4. 部署到 Cloudflare
+### 4. 推荐方式：本地一键部署到 Cloudflare
 
 ```bash
 npm run deploy
@@ -110,6 +110,53 @@ npm run deploy
 - 首次密码：由部署脚本随机生成，请保存终端输出
 
 > 首次登录后台后，建议立刻修改管理员密码。
+
+### 5. Cloudflare 控制台直接部署
+
+如果你是在 Cloudflare 控制台里连接 Git 仓库并直接部署，需要先处理 D1 数据库绑定。
+
+控制台部署通常只会执行 `npx wrangler deploy`，它不会自动帮你创建 D1 数据库。如果 `wrangler.toml` 里写的是别人账号下的 `database_id`，就会出现类似错误：
+
+```text
+D1 binding 'DB' references database '...' which was not found
+```
+
+解决步骤：
+
+1. 进入 Cloudflare 控制台；
+2. 打开 `Workers & Pages` → `D1 SQL Database`；
+3. 创建一个 D1 数据库，建议名称使用 `paoge`；
+4. 复制新数据库的 `database_id`；
+5. 回到项目的 `wrangler.toml`，把占位符替换成你自己的数据库 ID：
+
+```toml
+database_id = "你的 D1 数据库 ID"
+```
+
+项目里默认写的是 `REPLACE_WITH_YOUR_D1_DATABASE_ID`，它只是提醒你要替换，不是可直接部署的真实 ID。
+
+6. 在 Cloudflare 控制台的构建配置中确认部署命令是：
+
+```bash
+npx wrangler deploy
+```
+
+7. 数据库首次创建后，还需要执行表结构和初始数据。可以在本地执行：
+
+```bash
+npx wrangler d1 execute paoge --remote --file=./database/schema.sql
+```
+
+8. 再复制一份初始化数据文件，把管理员密码占位符换成你自己的临时密码：
+
+```bash
+cp database/seed.sql database/.seed.local.sql
+sed -i.bak "s/__PAOGE_ADMIN_PASSWORD__/你的临时密码/g" database/.seed.local.sql
+npx wrangler d1 execute paoge --remote --file=./database/.seed.local.sql
+rm -f database/.seed.local.sql database/.seed.local.sql.bak
+```
+
+> 注意：`database/seed.sql` 里的管理员密码是占位符，不能原样用于正式部署。更推荐使用 `npm run deploy`，它会自动生成随机首次密码，并避免线上保留固定默认密码。
 
 ## 后台功能
 
@@ -170,7 +217,7 @@ npm run deploy:manual
 主要配置文件是 `wrangler.toml`：
 
 ```toml
-name = "paoge"
+name = "pao-ge"
 main = "worker/index.js"
 compatibility_date = "2025-06-25"
 
@@ -185,13 +232,15 @@ database_id = "你的 D1 数据库 ID"
 
 字段含义：
 
-- `name`：Worker 项目名称，影响默认访问域名。
+- `name`：Worker 项目名称，影响默认访问域名；如果 Cloudflare 控制台项目名是 `pao-ge`，这里也应保持一致。
 - `main`：Worker 入口文件。
 - `compatibility_date`：Cloudflare Workers 的兼容日期，用来固定运行时行为。
 - `assets.directory`：静态资源目录。
 - `binding`：代码中访问数据库时使用的变量名，本项目固定为 `DB`。
 - `database_name`：D1 数据库名称。
-- `database_id`：D1 数据库唯一 ID，一键部署脚本会自动写入。
+- `database_id`：D1 数据库唯一 ID，必须属于你当前登录的 Cloudflare 账号；本地一键部署脚本会自动写入。
+
+如果你看到 `Failed to match Worker name`，说明 Cloudflare 控制台里的 Worker 名称和 `wrangler.toml` 的 `name` 不一致。把两边改成同一个名称即可。
 
 ## 接口概览
 
